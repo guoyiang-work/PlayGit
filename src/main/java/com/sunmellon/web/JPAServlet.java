@@ -40,7 +40,6 @@ public class JPAServlet extends HttpServlet {
             throws ServletException, IOException {
         Husband husband = new Husband();
         Wife wife = new Wife();
-        husband.setWife(wife);
         wife.setHusband(husband);
         wifeFacade.create(wife);
         response.setContentType("text/html;charset=UTF-8");

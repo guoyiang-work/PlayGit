@@ -24,7 +24,7 @@ public class Wife implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @OneToOne(mappedBy = "wife", cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Husband husband;
     
     public Long getId() {

@@ -40,18 +40,18 @@ public class JPAServlet extends HttpServlet {
             throws ServletException, IOException {
         Husband husband = new Husband();
         Wife wife = new Wife();
-        wife.setHusband(husband);
-        wifeFacade.create(wife);
+        husband.setWife(wife);
+        husbandFacade.create(husband);
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>OneToOne bidirectional relationship</title>");            
+            out.println("<title>OneToOne unidirectional relationship</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>OneToOne bidirectional relationship</h1>");
+            out.println("<h1>OneToOne unidirectional relationship</h1>");
             out.println("</body>");
             out.println("</html>");
         }

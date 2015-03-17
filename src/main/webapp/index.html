@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JPA 2.1 relationships</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            table {
+                border-collapse: collapse;
+                margin-top: 10px;
+                width: 500px;
+            }
+
+            table, th, td {
+                border: 1px solid black;
+                vertical-align: text-top;
+            }
+            
+            tr {
+                height: 25px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Foreign Key in one table</h1>
+        <table>
+            <thead>
+                <tr><td colspan="2">Husband</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>ID</td><td>primary key</td></tr>
+                <tr><td>Name</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+        <br>
+        <table>
+            <thead>
+                <tr><td colspan="2">Wife</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>ID</td><td>primary key</td></tr>
+                <tr><td>Name</td><td>&nbsp;</td></tr>
+                <tr><td>HUSBAND_ID</td><td>foreign key</td></tr>
+            </tbody>
+        </table>
+        
+        <table>
+            <tr>
+                <td>OneToOne bidirectional <br> Wife: owner/owning side <br> Husband: inverse side</td>
+                <td>OneToOne bidirectional <br> Wife: inverse side<br> Husband: owner/owning side</td>
+                <td>OneToOne Unidirectional <br>Wife has a field: husband</td>
+                <td>OneToOne Unidirectional <br>Husband has a field: wife </td>
+                <td>OneToMany bidirectional <br> Wife: owner/owning side <br> Husband: inverse side</td>
+                <td>OneToMany bidirectional <br> Wife: inverse side<br> Husband: owner/owning side</td>
+                <td>OneToMany Unidirectional <br>Husband has a field: Collection&lt;Wife&gt; wives</td>
+                <td>OneToMany Unidirectional <br>Wife has a field: Collection&lt;Husband&gt; husbands</td>
+                <td>ManyToOne Unidirectional <br>Husband has a field wife</td>
+                <td>ManyToOne Unidirectional <br>Wife has a field husband</td>
+            </tr>
+            <tr>
+                <td>
+                    <pre>
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToOne(mappedBy = "husband")
+        private Wife wife;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToOne
+        private Husband husband;
+
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre style="color: red;">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToOne
+        private Wife wife;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToOne(mappedBy = "wife")
+        private Husband husband;
+
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre>
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;  
+  
+        @OneToOne
+        private Husband husband;
+
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre style="color: red;">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToOne
+        private Wife wife;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;  
+  
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre>
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToMany(mappedBy="husband")
+        private Collection&lt;Wife&gt; wives;
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        @ManyToOne
+        private Husband husband;
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre style="color: red">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @ManyToOne
+        private Wife wife;
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        @OneToMany(mappedBy="wife")
+        private Collection&lt;Husband&gt; husbands;
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre style="color: red;">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @OneToMany
+        private Collection&lt;Wife&gt; wives;
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        ...
+    }   
+                    </pre>                    
+                </td>                
+                <td>
+                    <pre style="color: red">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        @OneToMany
+        private Collection&lt;Husband&gt; husbands;
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre style="color: red">
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        @ManyToOne
+        private Wife wife;
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        ...
+    }   
+                    </pre>                    
+                </td>
+                <td>
+                    <pre>
+    @Entity
+    public class Husband implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;
+
+        ...
+    }
+
+    @Entity
+    public class Wife implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Id
+        @GeneratedValue(strategy = GenerationType.AUTO)
+        private Long id;    
+
+        @ManyToOne
+        private Husband husband;
+        ...
+    }   
+                    </pre>                    
+                </td>
+            </tr>
+            <tr>
+                <td>It works.</td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+                <td>
+                    <pre>
+                    </pre>
+                </td>
+            </tr>
+        </table>
+        <h1>Isolated relationship table</h1>
+        <table>
+            <thead>
+                <tr><td colspan="2">Man</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>ID</td><td>primary key</td></tr>
+                <tr><td>Name</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+        <br>
+        <table>
+            <thead>
+                <tr><td colspan="2">Women</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>ID</td><td>primary key</td></tr>
+                <tr><td>Name</td><td>&nbsp;</td></tr>
+            </tbody>
+        </table>
+        <br>
+        <table>
+            <thead>
+                <tr><td colspan="2">Man_Women</td></tr>
+            </thead>
+            <tbody>
+                <tr><td>Man_ID</td><td>foreign key</td></tr>
+                <tr><td>Woman_ID</td><td>foreign key</td></tr>
+            </tbody>
+        </table>
+        
+    </body>
+</html>

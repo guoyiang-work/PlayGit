@@ -16,6 +16,11 @@ import javax.persistence.OneToOne;
 /**
  *
  * @author csun
+
+
+
+testtt
+
  */
 @Entity
 public class Husband implements Serializable {
